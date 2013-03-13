@@ -1,0 +1,1 @@
+Simple text based farm game written in FreeBASIC. For x-platform compatability (Linux and Windows) the text is printed to a graphics Window (not a console app). Linux terminals (AFAIK) don't support the extended ASCII character by default.
