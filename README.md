@@ -9,13 +9,16 @@ To compile this program you need the FreeBASIC compiler which is available for L
 ## Windows
 1. Open the file farm.bas in a FreeBASIC IDE and use the built in compiler.
 2. Navigate inside the console cmd.exe to the folder, now type 
+
 	fbc farm.bas 
 
 ## Linux
 Navigate to the folder of FBFarm and type
+	
 	fbc farm.bas
 
 If you are using Ubuntu 12.10 (Quantal) 64-bit you need to add -l stdc++ so the line becomes:
+	
 	fbc -l stdc++ farm.bas
 	
 	
