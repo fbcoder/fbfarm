@@ -46,20 +46,22 @@ Type Logger
 		row As Integer = 23
 		logfile As String = ""
 		toFile As Boolean = Boolean.False
+		Declare Sub printLine ( prefix as String, msg as String )
 	Public:
 		Declare Constructor ()
 		Declare Sub debug ( msg As String )
+		Declare Sub mention ( msg As String )
 		Declare Sub setMaxRow ( newMaxRow as Integer ) 					
 End Type
 
 Constructor Logger ()
 End Constructor
 
-Sub Logger.debug ( msg As String )
+Sub Logger.printLine ( prefix as String, msg As String )
 	Color 7,0
 	Locate row,1
 	Print String(lineLength," ")
-	Dim As String _output = "debug: " & msg	
+	Dim As String _output = prefix & ": " & msg	
 	Dim length As Integer = Len(_output)
 	If length > lineLength Then
 		_output = Mid(_output,1,lineLength - 4)
@@ -70,6 +72,14 @@ Sub Logger.debug ( msg As String )
 	'Color 7,0
 	Print Mid(_output,1,length)
 	'print _output
+End Sub
+
+Sub Logger.debug ( msg as String )
+	printLine ("debug",msg)
+End Sub
+
+Sub Logger.mention ( msg as String )
+	printLine ("message",msg)
 End Sub
 
 Sub Logger.setMaxRow ( newMaxRow as Integer )
@@ -216,9 +226,8 @@ Function SoilData.plant(_seed as Crop ptr, byref _tile as Tile) As Boolean
 			_cropPhase = CropPhase.Seed
 		Return Boolean.True
 		end if
-	else
-		locate 23,3
-		print "debug: Tile must be plowed before seeding."
+	else		
+		logPtr->debug("Tile must be plowed before seeding.")
   end If
   Return Boolean.False
 End Function
@@ -616,7 +625,7 @@ Sub Engine.harvest()
 	If tileCrop <> NULL Then
 		Dim As Integer price = tileCrop->getHarvestPrice()
 		_budget.addAmount(price)
-		_logger.debug("Harvested! +$" & price)
+		_logger.mention("Harvested! +$" & price)
 	Else
 		_logger.debug("No crop to harvest.")
 	End If
