@@ -4,29 +4,28 @@
 Const NULL = 0
 Const MAP_MAX_WIDTH as integer = 40
 Const MAP_MAX_HEIGHT as integer = 10
-
 Const TICKS_PER_DAY = 300
 
 '--------------
 ' Enumerations
 '--------------
 Enum Boolean
-    False = 0
-    True = not(false)
+	False = 0
+	True = not(false)
 End Enum
 
 Enum TileType
-  Fence = 0
-  Water = 1
-  Soil = 2
-  Building = 3
+	Fence = 0
+	Water = 1
+	Soil = 2
+	Building = 3
 End Enum
 
 Enum CropPhase
-  None = 0
-  Seed = 1
-  Harvest = 2
-  Rotten = 3
+	None = 0
+	Seed = 1
+	Harvest = 2
+	Rotten = 3
 End Enum
 
 '--------------------------------
@@ -49,7 +48,8 @@ Type Logger
 		toFile As Boolean = Boolean.False
 	Public:
 		Declare Constructor ()
-		Declare Sub debug ( msg As String ) 					
+		Declare Sub debug ( msg As String )
+		Declare Sub setMaxRow ( newMaxRow as Integer ) 					
 End Type
 
 Constructor Logger ()
@@ -72,69 +72,73 @@ Sub Logger.debug ( msg As String )
 	'print _output
 End Sub
 
+Sub Logger.setMaxRow ( newMaxRow as Integer )
+	row = newMaxRow
+End Sub
+
 Type Tile
-  private:
-    background as integer = 6
-    foreground as integer = 6
-    char as integer = 220
-  public:
-    Declare Constructor()
-    Declare Constructor(b as integer, f as integer, c as integer)
-    Declare Sub drawMe(y as integer, x as integer)
-    Declare Sub invert()
+	private:
+		background as integer = 6
+		foreground as integer = 6
+		char as integer = 220
+	public:
+		Declare Constructor()
+		Declare Constructor(b as integer, f as integer, c as integer)
+		Declare Sub drawMe(y as integer, x as integer)
+		Declare Sub invert()
 End Type
 
 Constructor Tile()
 End Constructor
 
 Constructor Tile(b as integer, f as integer, c as integer)
-  background = b
-  foreground = f
-  char = c
+	background = b
+	foreground = f
+	char = c
 End Constructor
 
 Sub Tile.drawMe(y as integer, x as integer)
-  locate y,x
-  color foreground, background
-  print chr$(char)
+	locate y,x
+	color foreground, background
+	print chr$(char)
 End Sub
 
 Sub Tile.invert()
-  swap foreground,background
+	swap foreground,background
 End Sub
 
 Type Crop
-  private:
-    _name As String
-    seedPrice as integer
-    harvestPrice as integer
-    growTime as integer
-    harvestTime as integer
-    needsWater as Boolean = False
-    seedTile as Tile
-    growTile as Tile
-    rotTile as Tile
-  public:
-    Declare Constructor(__name As String,_seedPrice as Integer,_harvestPrice as integer,_growTime as integer,_harvestTime as integer,_seedTile as Tile,_growTile as Tile,_rotTile as Tile)
-    Declare Function getName() As String
-    Declare Function getGrowTime() as integer
-    Declare Function getHarvestTime() as integer
-    Declare Function getSeedPrice as integer
-    Declare Function getHarvestPrice() as integer
-    Declare Function getSeedTile() as Tile
-    Declare Function getGrowTile() as Tile
-    Declare Function getRotTile() as Tile
+	private:
+		_name As String
+		seedPrice as integer
+		harvestPrice as integer
+		growTime as integer
+		harvestTime as integer
+		needsWater as Boolean = False
+		seedTile as Tile
+		growTile as Tile
+		rotTile as Tile
+	public:
+		Declare Constructor(__name As String,_seedPrice as Integer,_harvestPrice as integer,_growTime as integer,_harvestTime as integer,_seedTile as Tile,_growTile as Tile,_rotTile as Tile)
+		Declare Function getName() As String
+		Declare Function getGrowTime() as integer
+		Declare Function getHarvestTime() as integer
+		Declare Function getSeedPrice as integer
+		Declare Function getHarvestPrice() as integer
+		Declare Function getSeedTile() as Tile
+		Declare Function getGrowTile() as Tile
+		Declare Function getRotTile() as Tile
 End Type
 
 Constructor Crop(__name As String,_seedPrice as integer,_harvestPrice as integer,_growTime as integer,_harvestTime as integer,_seedTile as Tile,_growTile as Tile,_rotTile as Tile)
-  _name = __name
-  seedPrice = _seedPrice
-  harvestPrice = _harvestPrice
-  growTime = _growTime
-  harvestTime = _harvestTime
-  seedTile = _seedTile
-  growTile = _growTile
-  rotTile = _rotTile  
+	_name = __name
+	seedPrice = _seedPrice
+	harvestPrice = _harvestPrice
+	growTime = _growTime
+	harvestTime = _harvestTime
+	seedTile = _seedTile
+	growTile = _growTile
+	rotTile = _rotTile  
 End Constructor
 
 Function Crop.getName() As String
@@ -142,11 +146,11 @@ Function Crop.getName() As String
 End Function
 
 Function Crop.getGrowTime() as integer
-  return growTime
+	return growTime
 End Function
 
 Function Crop.getHarvestTime() as integer
-  return harvestTime
+	return harvestTime
 End Function
 
 Function Crop.getSeedPrice() As Integer
@@ -158,57 +162,63 @@ Function Crop.getHarvestPrice() As Integer
 End Function
 
 Function Crop.getSeedTile() as Tile
-  return seedTile
+	return seedTile
 End Function
 
 Function Crop.getGrowTile() as Tile
-  return growTile
+	return growTile
 End Function
 
 Function Crop.getRotTile() as Tile
-  return rotTile
+	return rotTile
 End Function
 
 Type SoilData
-  private:
-    plowed as Boolean = Boolean.False
-    seed as Crop ptr = NULL
-    seedDays as integer = 0
-    watered as Boolean = Boolean.False
-    _cropPhase as CropPhase = CropPhase.None
-  public:
-    Declare Constructor()
-    Declare Sub plow()
-    Declare Function plant(_seed as Crop ptr, byref _tile as Tile) As Boolean
-    Declare Sub newDay(byref _tile as Tile)
-    Declare Sub killCrop()
-    Declare Function getStateString() As String
-    Declare Function harvest() As Crop ptr
+	private:
+		plowed as Boolean = Boolean.False
+		seed as Crop ptr = NULL
+		seedDays as integer = 0
+		watered as Boolean = Boolean.False
+		_cropPhase as CropPhase = CropPhase.None
+		logPtr as Logger ptr = NULL
+	public:
+		Declare Constructor ()
+		Declare Constructor (_logPtr as Logger ptr)
+		Declare Sub plow()
+		Declare Function plant(_seed as Crop ptr, byref _tile as Tile) As Boolean
+		Declare Sub newDay(byref _tile as Tile)
+		Declare Sub killCrop()
+		Declare Function getStateString() As String
+		Declare Function harvest() As Crop ptr
 End Type
 
-Constructor SoilData()
+Constructor SoilData ()
+End Constructor
+
+Constructor SoilData (_logPtr as Logger ptr)
+	logPtr = _logPtr
 End Constructor
 
 Sub SoilData.plow()
-  if plowed <> Boolean.True then
-    plowed = Boolean.True
-  else
-    ' already plowed
-  end if
+	if plowed <> Boolean.True then
+		plowed = Boolean.True
+	else
+		' already plowed
+	end if
 End Sub
 
 Function SoilData.plant(_seed as Crop ptr, byref _tile as Tile) As Boolean
-  if plowed then
-    if _seed <> NULL then
-      ' seed can be planted.
-      seed = _seed
-      _tile = seed->getSeedTile
-      _cropPhase = CropPhase.Seed
-      Return Boolean.True
-    end if
-  else
-    locate 23,3
-    print "debug: Tile must be plowed before seeding."
+	if plowed then
+		if _seed <> NULL then
+			' seed can be planted.
+			seed = _seed
+			_tile = seed->getSeedTile
+			_cropPhase = CropPhase.Seed
+		Return Boolean.True
+		end if
+	else
+		locate 23,3
+		print "debug: Tile must be plowed before seeding."
   end If
   Return Boolean.False
 End Function
@@ -243,7 +253,7 @@ Function SoilData.getStateString() As String
 		cropString = seed->getName()
 	Else		
 		cropString = "Plowed patch of land."
-	EndIf
+	End If
 	phaseString = ""
 	Select Case _cropPhase:
 		Case CropPhase.Seed:
@@ -260,8 +270,8 @@ Function SoilData.harvest() As Crop Ptr
 	If seed <> NULL Then
 		If _cropPhase = CropPhase.Harvest Then
 			Return seed
-		EndIf
-	EndIf
+		End If
+	End If
 	Return NULL
 End Function
 
@@ -382,7 +392,7 @@ Destructor Map()
     For j as integer = 0 to (width - 1)
       If _soilData(i,j) <> NULL Then
       	Delete _soilData(i,j)
-      EndIf
+      End If
     Next j
   Next i  
 End Destructor
@@ -402,20 +412,20 @@ End Sub
 Sub Map.plow(row as integer, col as integer)
 	If typeMap(row,col) = TileType.Soil Then        
     	If _soilData(row,col) = NULL Then:
-    		_soilData(row,col) = New SoilData()
-    	EndIf
+    		_soilData(row,col) = New SoilData(logPtr)
+    	End If
     	changeTile(row,col,SOIL_PLOWED)
     	_soilData(row,col)->plow()
   	Else
 		logPtr->debug("Unplowable tile.")
-	EndIf
+	End If
 End Sub
 
 Function Map.seed ( row as Integer, col as Integer, cropPtr as Crop Ptr ) As Boolean
   if _soilData(row,col) <> NULL And typeMap(row,col) = TileType.Soil then            
     If _soilData(row,col)->plant(cropPtr,visualTile(row,col)) = Boolean.True Then
     	Return Boolean.True
-    EndIf    
+    End If    
   else    
     logPtr->debug("Unseedable tile!")
   end If
@@ -429,7 +439,7 @@ Function Map.harvest ( row As Integer, col As Integer ) As Crop Ptr
 			Delete _soilData(row,col)
 			_soilData(row,col) = NULL
 			visualTile(row,col) = SOIL_LIGHT
-		EndIf
+		End If
 		Return harvestedCrop
 	End If
 	Return NULL
@@ -470,7 +480,7 @@ Function Map.getTileInfo(row As Integer, col As integer) As String
 			Case Else:
 				Return "Unknown TileType, should not happen!"
 		End Select	
-	EndIf
+	End If
 End Function
 
 Type Budget
@@ -503,7 +513,7 @@ End Sub
 Function Budget.canSpend ( _amount As Integer ) As Boolean
 	If (amount - _amount) >= 0 Then
 		Return Boolean.True
-	EndIf
+	End If
 	Return Boolean.False
 End Function
 
@@ -553,13 +563,15 @@ Sub Engine.init()
 	dim h as integer
 	dim w as integer
 	screeninfo w,h
-	maxRow = h \ 16
+	' Calculate new maxRow and maxCol, 2 must be substracted from maxRow or else everything 'shifts up'.
+	maxRow = (h \ 16) - 2
 	maxCol = w \ 8
 	' Set the screen to use a certain character size.
 	width maxCol, maxRow
 	rowOffset = (maxRow - landHeight) \ 2
 	colOffset = (maxCol - landWidth) \ 2
 	_drawMap()
+	_logger.setMaxRow(maxRow)
 End Sub
 
 Sub Engine.moveCursor(rowMove as integer,colMove as integer)
@@ -592,10 +604,10 @@ Sub Engine.plantCrop(cropToPlant as Crop ptr)
 	If _budget.canSpend(_seedPrice) = Boolean.True Then
 		If myMap.seed(cursorRow,cursorCol,cropToPlant) = Boolean.True Then
  			_budget.subStractAmount(_seedPrice)
-		EndIf
+		End If
 	Else
 		_logger.debug("Can't afford this seed.")
-	EndIf	
+	End If	
 	myMap.drawMap(rowOffset,colOffset)
 End Sub
 
@@ -604,9 +616,10 @@ Sub Engine.harvest()
 	If tileCrop <> NULL Then
 		Dim As Integer price = tileCrop->getHarvestPrice()
 		_budget.addAmount(price)
+		_logger.debug("Harvested! +$" & price)
 	Else
 		_logger.debug("No crop to harvest.")
-	EndIf
+	End If
 End Sub
 
 Sub Engine.startNewDay()
@@ -615,7 +628,7 @@ Sub Engine.startNewDay()
 	myMap.update()
 	myMap.drawMap(rowOffset,colOffset)
 	drawCursor()
-End Sub
+	End Sub
 
 Sub Engine.getTileInfo()
 	Dim As String info = "Tile #@ " & cursorRow & "," & cursorCol & ": " & myMap.getTileInfo(cursorRow,cursorCol)
