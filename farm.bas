@@ -670,7 +670,7 @@ e.init()
 Dim ticks as integer = 0
 Dim k as string
 Do    
-  k = Inkey$
+  k = Inkey
   Select Case k
     case "w":
 		e.moveCursor(-1,-0)
@@ -695,7 +695,7 @@ Do
     e.startNewDay()
     ticks = 0
   end if
-Loop While k <> chr$(27)
+Loop While k <> chr(27)
 
 '------
 ' Exit
